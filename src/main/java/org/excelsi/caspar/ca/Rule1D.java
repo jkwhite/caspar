@@ -1,7 +1,7 @@
 package org.excelsi.caspar.ca;
 
 
-import javassist.*;
+//import javassist.*;
 import java.util.*;
 import java.math.BigInteger;
 import java.io.*;
@@ -210,6 +210,48 @@ public class Rule1D extends AbstractRule implements Rule, java.io.Serializable {
         _next=null;
     }
 
+    public void generate2(int[] next, int[] row, int[] existing, boolean over) {
+        final int offset = (_len-2)/2;
+        int failed = 0;
+        for(int i=0;i<next.length;i++) {
+            int colidx = _sel.next(row, i);
+            if(colidx==-1) {
+                // rule cannot exist in this space
+                // use existing value (possibly from another rule)
+                //if(_debug&&!printed) { System.err.println("no space for rule "+toSeed()+" at "+i); printed=true; }
+                if(i==_debugColumn) {
+                    System.err.println(toSeed()+" skipping, over="+over+", prev alpha: "+Colors.alpha(row[i+offset])+" bgra="+Colors.alpha(_bgr)+" exalpha: "+Colors.alpha(existing[i]));
+                }
+                next[i] = over?combineAlpha(row[i+offset], _bgr):existing[i];
+                if(next[i]==0) {
+                    next[i] = _bgr;
+                }
+                failed++;
+                continue;
+            }
+            //spaceCount++;
+            //_totals[colidx]++;
+            if(i==_debugColumn) {
+                System.err.println(toSeed()+" prev alpha: "+Colors.alpha(row[i+offset])+" colalpha: "+Colors.alpha(_colors[colidx]));
+            }
+            if(existing[i]==_bgr||existing[i]==0) {
+                //if(i%100==0) System.err.print(_existing[i]==_bgr?"b":"z");
+                next[i] = combineAlpha(row[i+offset], _colors[colidx]);
+            }
+            else {
+                //if(i%100==0) System.err.print("H");
+                //if(Rand.om.nextInt(100)>=50) {
+                    //_next[i] = combineAlpha(_row[i+offset], _colors[colidx]);
+                //}
+            }
+            //if(same&&next[i]!=row[i+offset]) {
+                //if(_haslast&&last[i+offset]!=next[i]) {
+                    //same = false;
+                //}
+            //}
+        }
+    }
+
     public float generate(Plane c, int start, int end, boolean stopOnSame, boolean over, Updater u) {
         final int offset = (_len-2)/2;
         if(_next==null||_next.length!=c.getWidth()) {
@@ -259,7 +301,7 @@ public class Rule1D extends AbstractRule implements Rule, java.io.Serializable {
                     failed++;
                     continue;
                 }
-                spaceCount++;
+                //spaceCount++;
                 _totals[colidx]++;
                 if(i==_debugColumn) {
                     System.err.println(toSeed()+" prev alpha: "+Colors.alpha(_row[i+offset])+" colalpha: "+Colors.alpha(_colors[colidx]));
@@ -269,10 +311,10 @@ public class Rule1D extends AbstractRule implements Rule, java.io.Serializable {
                     _next[i] = combineAlpha(_row[i+offset], _colors[colidx]);
                 }
                 else {
-                    if(i%100==0) System.err.print("H");
-                    if(Rand.om.nextInt(100)>=50) {
-                        _next[i] = combineAlpha(_row[i+offset], _colors[colidx]);
-                    }
+                    //if(i%100==0) System.err.print("H");
+                    //if(Rand.om.nextInt(100)>=50) {
+                        //_next[i] = combineAlpha(_row[i+offset], _colors[colidx]);
+                    //}
                 }
                 if(same&&_next[i]!=_row[i+offset]) {
                     if(_haslast&&_last[i+offset]!=_next[i]) {

@@ -5,6 +5,7 @@ import java.util.Random;
 
 
 public class Colors {
+    public static final int BLACK = pack(0,0,0,256);
     public static final int COLOR_MASK = 0x00ffffff;
     public static final int ALPHA_MASK = 0xff000000;
 
