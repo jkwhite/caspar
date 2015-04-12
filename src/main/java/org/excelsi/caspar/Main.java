@@ -248,7 +248,7 @@ public class Main extends Application {
         //root.setLayoutX(-400);
         //root.setLayoutY(-400);
         //Scene scene = new Scene(root, 1200, 1000);
-        Scene scene = new Scene(root, 1280, 1024, true, SceneAntialiasing.BALANCED);
+        Scene scene = new Scene(root, 1280, 1024, true, SceneAntialiasing.DISABLED);
         scene.setFill(Color.BLACK);
         scene.setCamera(new PerspectiveCamera());
 
